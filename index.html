@@ -735,7 +735,7 @@ window.onXmltvResult=function(ok,payload){
 (function(){
   var saved=(function(){try{return JSON.parse(localStorage.getItem("tvguide:url"))||"";}catch(e){return "";}})();
   var hasBridge=(typeof window.Android!=="undefined" && window.Android.fetchXmltv);
-  var url=saved || (hasBridge && window.Android.defaultUrl ? window.Android.defaultUrl() : "");
+  var url=saved || (hasBridge && window.Android.defaultUrl ? window.Android.defaultUrl() : "https://raw.githubusercontent.com/karenda-jp/etc/refs/heads/main/guides.xml");
   if(!url) return;
   var box=document.getElementById("url"); if(box) box.value=url;
   try{ localStorage.setItem("tvguide:url", JSON.stringify(url)); }catch(e){}
