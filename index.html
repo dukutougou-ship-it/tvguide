@@ -209,7 +209,8 @@ main{flex:1;overflow:auto;position:relative}
     <div class="section-title">保存データ</div>
     <p class="note">保存先はこのブラウザです。端末を変えるときや、保存が効かない環境のために書き出せます。</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button id="expBtn">書き出す</button>
+      <button id="csvBtn">CSVで書き出す</button>
+      <button id="expBtn">JSONで書き出す</button>
       <label class="file-label">読み込む<input type="file" id="impFile" accept=".json,application/json"></label>
     </div>
   </div>
@@ -596,6 +597,32 @@ function renderWatch(){
 }
 
 /* ---------- 書き出し／読み込み ---------- */
+document.getElementById("csvBtn").onclick=()=>{
+  if(!S.saved.length){ setStatus("気になる番組がありません。",true); return; }
+  const pad=n=>String(n).padStart(2,"0");
+  const fmtDT=t=>{const d=new Date(t);
+    return d.getFullYear()+"/"+pad(d.getMonth()+1)+"/"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes());};
+  const esc=v=>{ v=(v==null?"":String(v)); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+  const rows=[["番組名","放送日","開始","終了","チャンネル"]];
+  for(const p of S.saved){
+    const d=new Date(p.start);
+    rows.push([
+      p.title,
+      d.getFullYear()+"/"+pad(d.getMonth()+1)+"/"+pad(d.getDate()),
+      pad(new Date(p.start).getHours())+":"+pad(new Date(p.start).getMinutes()),
+      pad(new Date(p.stop).getHours())+":"+pad(new Date(p.stop).getMinutes()),
+      p.chName
+    ]);
+  }
+  const csvText=rows.map(r=>r.map(esc).join(",")).join("\r\n");
+  // Excelで文字化けしないよう BOM(\uFEFF) 付き UTF-8 にする
+  const blob=new Blob(["\uFEFF"+csvText],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="kininaru-bangumi.csv"; a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus("CSVを書き出しました：kininaru-bangumi.csv");
+};
 document.getElementById("expBtn").onclick=()=>{
   const data={version:1,exportedAt:new Date().toISOString(),
     favs:[...S.favs],shown:S.shown,saved:S.saved,keywords:S.keywords};
