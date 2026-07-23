@@ -134,29 +134,6 @@ main{flex:1;overflow:auto;position:relative}
 @media (max-width:640px){:root{--col:150px}h1{font-size:21px}.panel{width:100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
-> flight-deal-finder@1.0.0 start
-> node server.js
-
-Flight deal finder running: http://localhost:3000
-⚠ DEMO MODE: TRAVELPAYOUTS_TOKEN が未設定のため、ダミーデータで動作しています。
-cd ~/Downloads/tvguide
-pbpaste > /tmp/tp.txt
-python3 - <<'ENDOFPY'
-p="index.html"
-s=open(p,encoding="utf-8").read()
-tag=open("/tmp/tp.txt",encoding="utf-8").read().strip()
-if "tp-em.com" in s:
-    print("すでに設置済みです")
-elif "</head>" in s:
-    s=s.replace("</head>", tag+"\n</head>", 1)
-    open(p,"w",encoding="utf-8").write(s)
-    print("設置しました")
-else:
-    print("</head> が見つかりません")
-ENDOFPY
-git add index.html
-git commit -m "add travelpayouts drive script"
-git push
 </head>
 <body>
 
